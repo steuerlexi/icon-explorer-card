@@ -7,6 +7,8 @@ A **Home Assistant Lovelace custom card** to search and browse all your installe
 [![license](https://img.shields.io/github/license/steuerlexi/icon-explorer-card?style=for-the-badge)](LICENSE)
 
 ---
+<img width="562" height="260" alt="image" src="https://github.com/user-attachments/assets/5b3cc111-3c07-4d21-b157-069a5ab121f1" />
+
 
 ## Features
 

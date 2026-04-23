@@ -130,6 +130,9 @@ No data is stored on any server — everything happens client-side.
 | Stale icons | Run `localStorage.removeItem('icon_explorer_v4')` in browser console, then refresh. |
 | Custom icons not rendering | Make sure the icon pack is installed and loaded in Home Assistant. |
 
+**Using your own SVG icons:**
+If you want to add completely custom SVG icons to Home Assistant, check out [`custom_icons`](https://github.com/thomasloven/hass-custom_icons) by Thomas Lovren. It lets you drop any `.svg` file into your config and use it as an icon everywhere in HA.
+
 ---
 
 ## 📄 License

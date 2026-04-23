@@ -12,7 +12,7 @@ A **Home Assistant Lovelace custom card** to search and browse all your installe
 
 - **Live Search** — Instantly filter icons as you type
 - **Pagination** — Loads icons in chunks, no browser freeze
-- **One-Click Copy** — Click any icon to copy its name
+- **One-Click Copy** — Click any icon to copy its name (`mdi:home`, `si:github`, etc.) to your clipboard
 - **Multi-Pack Support** — Configure which icon packs to include
 - **Smart Caching** — 24h localStorage cache for instant reloads
 - **Fully Configurable** — Columns, size, names, page size
@@ -112,6 +112,8 @@ extra_icons:
 ## How It Works
 
 The card fetches icon metadata directly from each pack's GitHub repository on first load, then caches it in your browser's `localStorage` for 24 hours.
+
+**Using the card:** Type in the search box to filter icons, then **click any icon** to copy its full name (e.g. `mdi:home`, `si:github`) directly to your clipboard. A small toast notification confirms the copy.
 
 No data is stored on any server — everything happens client-side.
 

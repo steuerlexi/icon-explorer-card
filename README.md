@@ -1,4 +1,4 @@
-# Icon Explorer Card
+# 🔍 Icon Explorer Card
 
 A **Home Assistant Lovelace custom card** to search and browse all your installed icon packs with live search, pagination, and one-click copy to clipboard.
 
@@ -10,20 +10,20 @@ A **Home Assistant Lovelace custom card** to search and browse all your installe
 <img width="562" height="260" alt="image" src="https://github.com/user-attachments/assets/5b3cc111-3c07-4d21-b157-069a5ab121f1" />
 
 
-## Features
+## ✨ Features
 
-- **Live Search** — Instantly filter icons as you type
-- **Pagination** — Loads icons in chunks, no browser freeze
-- **One-Click Copy** — Click any icon to copy its name (`mdi:home`, `si:github`, etc.) to your clipboard
-- **Multi-Pack Support** — Configure which icon packs to include
-- **Smart Caching** — 24h localStorage cache for instant reloads
-- **Fully Configurable** — Columns, size, names, page size
+- 🔍 **Live Search** — Instantly filter icons as you type
+- 📄 **Pagination** — Loads icons in chunks, no browser freeze
+- 📋 **One-Click Copy** — Click any icon to copy its name (`mdi:home`, `si:github`, etc.) to your clipboard
+- 🎨 **Multi-Pack Support** — Configure which icon packs to include
+- ⚡ **Smart Caching** — 24h localStorage cache for instant reloads
+- ⚙️ **Fully Configurable** — Columns, size, names, page size
 
 ---
 
-## Installation
+## 🚀 Installation
 
-### HACS (Recommended)
+### 📦 HACS (Recommended)
 
 1. Open **HACS** in Home Assistant
 2. Go to **Frontend** → **Custom repositories**
@@ -32,7 +32,7 @@ A **Home Assistant Lovelace custom card** to search and browse all your installe
 5. Install the card
 6. Hard refresh your browser (`Ctrl+F5` / `Cmd+Shift+R`)
 
-### Manual
+### 🛠️ Manual
 
 1. Copy `dist/icon-explorer-card.js` to `/config/www/`
 2. Add to your Lovelace resources:
@@ -44,7 +44,7 @@ A **Home Assistant Lovelace custom card** to search and browse all your installe
 
 ---
 
-## Supported Icon Packs
+## 🎨 Supported Icon Packs
 
 The card can load metadata from any icon pack hosted on GitHub. By default it loads all available packs.
 
@@ -61,7 +61,7 @@ The card can load metadata from any icon pack hosted on GitHub. By default it lo
 
 ---
 
-## Configuration
+## ⚙️ Configuration
 
 Add the card to your dashboard:
 
@@ -74,7 +74,7 @@ show_names: true
 page_size: 200
 ```
 
-### Options
+### 📋 Options
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
@@ -86,7 +86,7 @@ page_size: 200
 | `packs` | list | all | Which packs to load (see below) |
 | `extra_icons` | list | `[]` | Additional custom icons |
 
-### Limit Which Packs Load
+### 🎒 Limit Which Packs Load
 
 If you only want specific packs:
 
@@ -100,7 +100,7 @@ packs:
 
 Available pack keys: `mdi`, `si`, `hue`, `phu`, `fluent`, `icon-park`, `logos`, `wi`
 
-### Add Extra Icons
+### ➕ Add Extra Icons
 
 ```yaml
 type: custom:icon-explorer-card
@@ -111,7 +111,7 @@ extra_icons:
 
 ---
 
-## How It Works
+## 🧠 How It Works
 
 The card fetches icon metadata directly from each pack's GitHub repository on first load, then caches it in your browser's `localStorage` for 24 hours.
 
@@ -121,7 +121,7 @@ No data is stored on any server — everything happens client-side.
 
 ---
 
-## Troubleshooting
+## 🛟 Troubleshooting
 
 | Problem | Solution |
 |---------|----------|
@@ -132,6 +132,6 @@ No data is stored on any server — everything happens client-side.
 
 ---
 
-## License
+## 📄 License
 
 MIT

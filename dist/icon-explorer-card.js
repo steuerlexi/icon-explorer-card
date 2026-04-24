@@ -378,6 +378,7 @@ class IconExplorerCard extends HTMLElement {
 
       const icon = document.createElement('ha-icon');
       icon.setAttribute('icon', name);
+      icon.style.setProperty('--mdi-icon-size', `${this.config.icon_size}px`);
       icon.style.width = `${this.config.icon_size}px`;
       icon.style.height = `${this.config.icon_size}px`;
       icon.style.color = 'var(--primary-text-color, #000)';

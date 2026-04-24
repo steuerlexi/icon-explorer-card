@@ -5,7 +5,7 @@ class IconExplorerCard extends HTMLElement {
     this._filtered = [];
     this._loaded = false;
     this._searchQuery = '';
-    this._pageSize = 200;
+    this._pageSize = 50;
     this._currentPage = 1;
   }
 
@@ -15,7 +15,7 @@ class IconExplorerCard extends HTMLElement {
       columns: 6,
       icon_size: 32,
       show_names: true,
-      page_size: 200,
+      page_size: 50,
       packs: ['mdi','hue','phu','si','fluent','icon-park','logos','wi'],
       ...config
     };

@@ -34,7 +34,7 @@ A **Home Assistant Lovelace custom card** to search and browse all your installe
 
 ### 🛠️ Manual
 
-1. Copy `dist/icon-explorer-card.js` to `/config/www/`
+1. Copy `icon-explorer-card.js` to `/config/www/`
 2. Add to your Lovelace resources:
    ```yaml
    url: /local/icon-explorer-card.js

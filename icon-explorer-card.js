@@ -4,6 +4,7 @@ class IconExplorerCard extends HTMLElement {
     this._icons = [];
     this._filtered = [];
     this._loaded = false;
+    this._loading = false;
     this._searchQuery = '';
     this._pageSize = 50;
     this._currentPage = 1;
@@ -31,28 +32,49 @@ class IconExplorerCard extends HTMLElement {
     }
   }
 
-  async _loadAllIcons() {
+  async _loadAllIcons(forceRescan = false) {
     const CACHE_KEY = 'icon_explorer_v4';
     const CACHE_TIME_KEY = CACHE_KEY + '_time';
+    const CACHE_PACKS_KEY = CACHE_KEY + '_packs';
     const ONE_DAY = 24 * 60 * 60 * 1000;
+
+    this._loading = true;
+    this._render();
 
     let allIcons = [];
     const cached = localStorage.getItem(CACHE_KEY);
     const cacheTime = localStorage.getItem(CACHE_TIME_KEY);
+    const cachedPacks = localStorage.getItem(CACHE_PACKS_KEY);
 
-    if (cached && cacheTime && (Date.now() - parseInt(cacheTime) < ONE_DAY)) {
-      try { allIcons = JSON.parse(cached); } catch (e) { allIcons = []; }
+    const isCacheValid = cached && cacheTime && (Date.now() - parseInt(cacheTime) < ONE_DAY);
+    const packsToLoad = this.config.packs || ['mdi','hue','phu','si','fluent','icon-park','logos','wi'];
+
+    if (!forceRescan && isCacheValid && cachedPacks) {
+      try {
+        const successfulPacks = JSON.parse(cachedPacks);
+        if (Array.isArray(successfulPacks) && successfulPacks.length > 0) {
+          const promises = successfulPacks.map(p => this._loadPack(p));
+          const results = await Promise.allSettled(promises);
+          for (const result of results) {
+            if (result.status === 'fulfilled' && Array.isArray(result.value)) {
+              allIcons.push(...result.value);
+            }
+          }
+        }
+      } catch (e) { /* fall through to full load */ }
     }
 
-    if (allIcons.length === 0) {
-      const packs = this.config.packs || ['mdi','hue','phu','si','fluent','icon-park','logos','wi'];
-      const promises = packs.map(p => this._loadPack(p));
+    if (allIcons.length === 0 || forceRescan) {
+      const promises = packsToLoad.map(p => this._loadPack(p));
       const results = await Promise.allSettled(promises);
+      const successfulPacks = [];
 
       allIcons = [];
-      for (const result of results) {
-        if (result.status === 'fulfilled' && Array.isArray(result.value)) {
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        if (result.status === 'fulfilled' && Array.isArray(result.value) && result.value.length > 0) {
           allIcons.push(...result.value);
+          successfulPacks.push(packsToLoad[i]);
         }
       }
 
@@ -60,15 +82,33 @@ class IconExplorerCard extends HTMLElement {
         allIcons = this._getFallbackIcons();
       }
 
-      localStorage.setItem(CACHE_KEY, JSON.stringify(allIcons));
-      localStorage.setItem(CACHE_TIME_KEY, String(Date.now()));
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(allIcons));
+        localStorage.setItem(CACHE_TIME_KEY, String(Date.now()));
+        localStorage.setItem(CACHE_PACKS_KEY, JSON.stringify(successfulPacks));
+      } catch (e) {
+        console.warn('IconExplorer: Failed to cache icons', e);
+      }
     }
 
+    this._loading = false;
     const extra = Array.isArray(this.config.extra_icons) ? this.config.extra_icons : [];
     this._icons = [...allIcons, ...extra];
     this._filtered = [...this._icons];
     this._currentPage = 1;
     this._render();
+  }
+
+  async _rescan() {
+    const CACHE_KEY = 'icon_explorer_v4';
+    localStorage.removeItem(CACHE_KEY);
+    localStorage.removeItem(CACHE_KEY + '_time');
+    localStorage.removeItem(CACHE_KEY + '_packs');
+    this._icons = [];
+    this._filtered = [];
+    this._currentPage = 1;
+    this._searchQuery = '';
+    await this._loadAllIcons(true);
   }
 
   async _loadPack(pack) {
@@ -294,6 +334,17 @@ class IconExplorerCard extends HTMLElement {
     clearBtn.style.color = '#fff'; clearBtn.style.cursor = 'pointer'; clearBtn.style.fontSize = '14px';
     clearBtn.addEventListener('click', () => { input.value = ''; this._filter(''); });
     searchRow.appendChild(clearBtn);
+
+    const rescanBtn = document.createElement('button');
+    rescanBtn.textContent = '↻';
+    rescanBtn.title = 'Rescan icon packs';
+    rescanBtn.style.padding = '8px 12px'; rescanBtn.style.borderRadius = '8px';
+    rescanBtn.style.border = 'none'; rescanBtn.style.background = 'var(--secondary-background-color, #f5f5f5)';
+    rescanBtn.style.color = 'var(--primary-text-color, #000)'; rescanBtn.style.cursor = 'pointer';
+    rescanBtn.style.fontSize = '14px';
+    rescanBtn.addEventListener('click', () => this._rescan());
+    searchRow.appendChild(rescanBtn);
+
     card.appendChild(searchRow);
 
     const countLabel = document.createElement('div');
@@ -344,9 +395,13 @@ class IconExplorerCard extends HTMLElement {
     const pageItems = this._filtered.slice(0, visible);
 
     if (this._countLabel) {
-      this._countLabel.textContent = total > 0
-        ? `Showing ${visible} of ${total} icons`
-        : 'No icons found.';
+      if (this._loading) {
+        this._countLabel.textContent = 'Loading icon packs...';
+      } else {
+        this._countLabel.textContent = total > 0
+          ? `Showing ${visible} of ${total} icons`
+          : 'No icons found.';
+      }
     }
 
     if (total === 0) {
@@ -355,7 +410,7 @@ class IconExplorerCard extends HTMLElement {
       empty.style.textAlign = 'center';
       empty.style.padding = '24px';
       empty.style.color = 'var(--secondary-text-color, #888)';
-      empty.textContent = 'No icons found.';
+      empty.textContent = this._loading ? 'Loading icon packs...' : 'No icons found.';
       this._grid.appendChild(empty);
       this._loadMoreRow.innerHTML = '';
       return;
